@@ -3,5 +3,14 @@ sh/test_start_script.sh
 .idea/
 project/notebooks/.ipynb_checkpoints
 project/.bash_history
-notebooks/*
+notebooks/.ipynb_checkpoints/
+notebooks/*_answers.ipynb
+notebooks/variables/.ipynb_checkpoints/
+notebooks/examples
+bin/
+lib/
+pyvenv.cfg
+lib64
+etc/
+share/
 .DS_Store
