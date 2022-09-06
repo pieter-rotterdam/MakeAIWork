@@ -4,3 +4,5 @@ sh/test_start_script.sh
 project/notebooks/.ipynb_checkpoints
 project/.bash_history
 notebooks/*
+.DS_Store
+test/~$s1 - partial.docx
