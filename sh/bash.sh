@@ -7,5 +7,5 @@ if (! command -v "docker" &> /dev/null ) then
     exit 0;    
 fi
 
-printf "%s cmd : %s\n" "$0" "${cmd}"
+printf "%s cmd : %s\n\t\n" "$0" "${cmd}"
 eval ${cmd}
