@@ -1,0 +1,1 @@
+source /Users/macbookpro/MakeAIWork/env/bin/activate

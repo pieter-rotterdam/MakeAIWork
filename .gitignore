@@ -14,12 +14,10 @@ lib64
 etc/
 share/
 .DS_Store
-<<<<<<< HEAD
 .bash_profile
 env/
 simulations/
-=======
 env/
-simulations/
 log.txt
->>>>>>> 577eadf0c66b9a3fe06c2bb5f53ce771d4741343
+scripts/lessen/carsim_oop/__pycache__
+scripts/lessen/clock_oop/__pycache__
