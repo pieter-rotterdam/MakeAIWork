@@ -15,3 +15,5 @@ etc/
 share/
 .DS_Store
 .bash_profile
+env/
+simulations/
