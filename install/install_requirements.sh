@@ -61,5 +61,5 @@ function install_with_pip {
 
 }
 
-install_with_conda
-install_with_pip 
+#install_with_conda
+install_with_pip

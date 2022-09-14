@@ -2,5 +2,8 @@ matplotlib-venn
 numpy
 ptpython
 scipy
-SimPyLC==3.10.0
+SimPyLC
 sonar
+Pillow
+pandas
+matplotlib
