@@ -1,0 +1,4 @@
+,length,width,weight,deckHeight,robotArmLength,numberOfSolarPanels,image,scienceInstruments
+0,6.0,1.56,360.0,83.0,1.8,2.0,../pics/mars.nasa.jpg,seismometer
+1,,,,108.0,,,,heat probe
+2,,,,,,,,radio science experiment
