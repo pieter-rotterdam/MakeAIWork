@@ -1,4 +1,5 @@
 import math
+from telnetlib import VT3270REGIME
 
 trainingSet = (
     ((
@@ -104,19 +105,61 @@ def in2out(train1, weights):
 
     n = len(train1)
 
-    Sum = 0.0
+    Sum1 = 0.0
+    Sum2 = 0.0
+    Sum3 = 0.0
+    Sum4 = 0.0
 
     # Compute vec[i] * weights[i]
     for i in range(0, n):
 
-        Sum += train1[i] * weights[i]
+        Sum1 += train1[i] * weights[i]
+        Sum2 += train2[i] * weights[i]
+        Sum3 += train3[i] * weights[i]
+        Sum4 += train4[i] * weights[i]
 
-    # TODO: softmax
-    return math.sqrt(Sum)
+def softmax(inputs):
+    temp = [math.exp(v) for v in inputs]
+    total = sum(temp)
+    return [t / total for t in temp]
+
+act1 = softmax(train1)
+for a1 in act1:
+    print(f"{a1:.8f}")
+
+print(f"total: {sum(act1)}")
+
+act2 = softmax(train2)
+for a2 in act2:
+    print(f"{a2:.8f}")
+
+print(f"total: {sum(act2)}")
+
+act3 = softmax(train3)
+for a3 in act3:
+    print(f"{a3:.8f}")
+
+print(f"total: {sum(act3)}")
+
+act4 = softmax(train4)
+for a4 in act4:
+    print(f"{a4:.8f}")
+
+print(f"total: {sum(act4)}")
+    
 
 
-v = mat2vec(trainingSet[0][0])
-w = initWeights(v)
-out = in2out(v, w)
+v1 = mat2vec(trainingSet[0][0])
+v2 = mat2vec(trainingSet[1][0])
+v3 = mat2vec(trainingSet[2][0])
+v4 = mat2vec(trainingSet[3][0])
+w1 = initWeights(v1)
+w2 = initWeights(v2)
+w3 = initWeights(v3)
+w4 = initWeights(v4)
+out1 = in2out(v1, w1)
+out2 = in2out(v2, w2)
+out3 = in2out(v3, w3)
+out4 = in2out(v4, w4)
 
-print(out)
+print(out1 , out2, out3, out4)
