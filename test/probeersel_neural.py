@@ -64,9 +64,7 @@ def mat2vec(mat):
 
     return vec
 
-
-
-matTrainingSet= (trainingSet[0][0],trainingSet[1][0],trainingSet[2][0],trainingSet[3][0])
+matTrainingSet= [trainingSet[0][0],trainingSet[1][0],trainingSet[2][0],trainingSet[3][0]]
 
 #print (matTrainingSet)
 
@@ -79,13 +77,14 @@ test2= mat2vec(testSet[1][0])
 test3= mat2vec(testSet[2][0])
 test4= mat2vec(testSet[3][0])
 
-trainList= (train1,train2,train3,train4)
-testList= (test1,test2,test3,test4)
+trainList= [train1,train2,train3,train4]
+testList= [test1,test2,test3,test4]
 
 #print (trainList)
 #print (testList)   
 
 #print (len(train1))
+print (f'vector1 {train1}')
 
 
 def initWeights(train1):
@@ -94,61 +93,29 @@ def initWeights(train1):
 
     weights = []
 
-    for i in range(0,n):
+    for i in range(n):
 
         weights.append(1.0)
 
     return weights
 
+#print (initWeights(train1))
 
 def in2out(train1, weights):
 
     n = len(train1)
 
-    Sum1 = 0.0
-    Sum2 = 0.0
-    Sum3 = 0.0
-    Sum4 = 0.0
+    sum1 = 0.0
+ 
+    # Compute vec[i] * weights[i]   
+    for i in range(n):
 
-    # Compute vec[i] * weights[i]
-    for i in range(0, n):
-
-        Sum1 += train1[i] * weights[i]
-        Sum2 += train2[i] * weights[i]
-        Sum3 += train3[i] * weights[i]
-        Sum4 += train4[i] * weights[i]
-
-def softmax(inputs):
-    temp = [math.exp(v) for v in inputs]
-    total = sum(temp)
-    return [t / total for t in temp]
-
-act1 = softmax(train1)
-for a1 in act1:
-    print(f"{a1:.8f}")
-
-print(f"total: {sum(act1)}")
-
-act2 = softmax(train2)
-for a2 in act2:
-    print(f"{a2:.8f}")
-
-print(f"total: {sum(act2)}")
-
-act3 = softmax(train3)
-for a3 in act3:
-    print(f"{a3:.8f}")
-
-print(f"total: {sum(act3)}")
-
-act4 = softmax(train4)
-for a4 in act4:
-    print(f"{a4:.8f}")
-
-print(f"total: {sum(act4)}")
+        sum1 += train1[i] * weights[i]
     
+        print (sum1)
+   
 
-
+'''    
 v1 = mat2vec(trainingSet[0][0])
 v2 = mat2vec(trainingSet[1][0])
 v3 = mat2vec(trainingSet[2][0])
@@ -163,3 +130,16 @@ out3 = in2out(v3, w3)
 out4 = in2out(v4, w4)
 
 print(out1 , out2, out3, out4)
+
+
+
+
+def softmax(out1):
+	e = math.exp(out1)
+	return e / e.sum(out1)
+
+result = softmax(out1)
+
+print(result)
+# print(sum(result))
+'''
