@@ -16,8 +16,6 @@ share/
 .DS_Store
 .bash_profile
 env/
-simulations/
-env/
 log.txt
 scripts/lessen/carsim_oop/__pycache__
 scripts/lessen/clock_oop/__pycache__
