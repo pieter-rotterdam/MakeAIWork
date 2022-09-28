@@ -1,5 +1,16 @@
+#!/usr/bin/env python
+
 import numpy as np
 import pandas as pd
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Activation, Dense
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.metrics import categorical_crossentropy
+
+# SHUFFLE_BUFFER = 500
+# BATCH_SIZE = 2
 
 d = pd.read_csv('sonar.csv')
 d = d.astype(str)
@@ -8,21 +19,31 @@ for itm in d.head():
   d[itm] = d[itm].str.split(',')
   
 d = d.apply(pd.Series.explode)
-# print(d.head)
 
-# d.to_csv('sonar1.csv', index=False)
+print(d.head)
+
+d.to_csv('sonar1.csv', index=False)
 
 train_labels=d.loc[:,'angle']
 train_samples=d.loc[:,'dist1':'dist3'] 
 
-# print (type(train_labels))
+print (train_labels)
 # print (type(train_samples))
 # print (train_labels)
 # print (train_samples) 
 # print (d)
 
-SHUFFLE_BUFFER = 500
-BATCH_SIZE = 2
+# tf.convert_to_tensor(train_samples)
+
+# Model = tf.keras.Sequential([
+#   Dense(units=3, activation='relu'),
+#   Dense(units=1, activation='relu')])
+
+
+
+# voor ons model input = 3 of 16, de input wordt dus gegeven aan eerste hidden layer
+
+# model.summary()
 
 ''''
 # Make numpy values easier to read.
