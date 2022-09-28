@@ -13,11 +13,16 @@ d = d.apply(pd.Series.explode)
 # d.to_csv('sonar1.csv', index=False)
 
 train_labels=d.loc[:,'angle']
-train_samples=d.loc[:,'dist1','dist2','dist3'] # samples nog debuggen om correct weer te geven
+train_samples=d.loc[:,'dist1':'dist3'] 
 
-#print (train_labels)
-print (train_samples) 
+# print (type(train_labels))
+# print (type(train_samples))
+# print (train_labels)
+# print (train_samples) 
+# print (d)
 
+SHUFFLE_BUFFER = 500
+BATCH_SIZE = 2
 
 ''''
 # Make numpy values easier to read.
