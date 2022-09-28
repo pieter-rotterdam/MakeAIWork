@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 
+from re import X
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Activation, Dense
+from tensorflow.keras.layers import Activation, Dense, BatchNormalization,  Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.metrics import categorical_crossentropy
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 
-# SHUFFLE_BUFFER = 500
-# BATCH_SIZE = 2
+# print(f"Tensorflow version: {tf.version.VERSION}")
 
-d = pd.read_csv('sonar.csv')
+d = pd.read_csv('./sonar.csv')
 d = d.astype(str)
 
 for itm in d.head():
@@ -20,31 +23,77 @@ for itm in d.head():
   
 d = d.apply(pd.Series.explode)
 
-print(d.head)
+# d.to_csv('sonar1.csv', index=False)
+tf.random.set_seed(1)
+# this is to get same results every expiriment
+tf.debugging.set_log_device_placement(False)
 
-d.to_csv('sonar1.csv', index=False)
+d.sample(frac=0.9)
 
-train_labels=d.loc[:,'angle']
+train_dataset = d.sample(frac=0.6)
+test_dataset = d.drop(train_dataset.index)
+train_dataset, temp_test_dataset =  train_test_split(d, test_size=0.4)
+test_dataset, valid_dataset =  train_test_split(temp_test_dataset, test_size=0.5)
+
+train_stats = train_dataset.describe()
+train_stats.pop("angle")
+train_stats = train_stats.transpose()
+train_stats
+
+train_labels = train_dataset.pop('angle')
+test_labels = test_dataset.pop('angle')
+valid_labels = valid_dataset.pop('angle')
+
+#test normalizing vs standardizing
+#normalize
+scaler = MinMaxScaler()
+normedTrainStats = scaler.fit_transform(train_stats)
+print (normedTrainStats)
+# normalizing helps the algorythms in the model i.e. less spiky  data
+
+#standardize
+# scaler = StandardScalar()
+# scaler.fit_transform(d)
+# standardization gets the mean of values to 0 and the variance to 1
+
+
+
+
+# print( train_dataset.shape )
+# print( temp_test_dataset.shape )
+# print( test_dataset.shape )
+# print( valid_dataset.shape )
+
+# print(f"Display the datatype of the test_dataset: {type(test_dataset)}")
+# print(f" Trai dataset       : {train_dataset.shape}")
+# print(f" Test dataset       : {test_dataset.shape}")
+# print(f" Validation dataset : {valid_dataset.shape}")
+
+
+
+# print(f'No of rows/columns in the dataset: {d.shape}')
+# 1529/5
+
 train_samples=d.loc[:,'dist1':'dist3'] 
 
-print (train_labels)
+# print (d.info()) 
+# print (d.dtypes)
+# print(d.head)
+# print (train_labels)
 # print (type(train_samples))
 # print (train_labels)
 # print (train_samples) 
 # print (d)
 
-# tf.convert_to_tensor(train_samples)
-
 # Model = tf.keras.Sequential([
 #   Dense(units=3, activation='relu'),
 #   Dense(units=1, activation='relu')])
 
-
-
 # voor ons model input = 3 of 16, de input wordt dus gegeven aan eerste hidden layer
 
-# model.summary()
+# Model.summary()
 
+# tf.convert_to_tensor(train_samples)
 ''''
 # Make numpy values easier to read.
 np.set_printoptions(precision=3, suppress=True)
