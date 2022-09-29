@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from re import X
+from time import time
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -13,7 +14,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 
-print(f"Tensorflow version: {tf.version.VERSION}")
 
 d = pd.read_csv('./sonar.csv')
 d = d.astype(str)
@@ -27,27 +27,27 @@ tf.random.set_seed(1)
 tf.debugging.set_log_device_placement(False)
 
 d.sample(frac=0.9)
-train_dataset = d.sample(frac=0.6)
-test_dataset = d.drop(train_dataset.index)
-train_dataset, temp_test_dataset =  train_test_split(d, test_size=0.4)
-test_dataset, valid_dataset =  train_test_split(temp_test_dataset, test_size=0.5)
+trainDataset = d.sample(frac=0.6)
+testDataset = d.drop(trainDataset.index)
+trainDataset, tempTestDataset =  train_test_split(d, test_size=0.4)
+testDataset, validDataset =  train_test_split(tempTestDataset, test_size=0.5)
 
-train_stats = train_dataset.describe()
-train_stats.pop("angle")
-train_stats = train_stats.transpose()
-train_stats
+trainStats = trainDataset.describe()
+trainStats.pop("angle")
+trainStats = trainStats.transpose()
+trainStats
 
-train_labels = train_dataset.pop('angle')
-test_labels = test_dataset.pop('angle')
-valid_labels = valid_dataset.pop('angle')
+trainLabels = trainDataset.pop('angle')
+testLabels = testDataset.pop('angle')
+validLabels = validDataset.pop('angle')
 
 #test normalizing vs standardizing
 #normalize
 scaler = MinMaxScaler()
-normedTrainData = scaler.fit_transform(train_dataset)
-normedTestData = scaler.fit_transform(test_dataset)
-normedValidDataset = scaler.fit_transform(valid_dataset)
-normedTrainStats = scaler.fit_transform(train_stats)
+normedTrainData = scaler.fit_transform(trainDataset)
+normedTestData = scaler.fit_transform(testDataset)
+normedValidDataset = scaler.fit_transform(validDataset)
+normedTrainStats = scaler.fit_transform(trainStats)
 # print (normedTrainStats)
 # normalizing helps the algorythms in the model i.e. less spiky  data
 
@@ -64,8 +64,7 @@ def build_model1_one_hidden_layer():
  
  learning_rate = 0.001
  optimizer = optimizers.Adam(learning_rate)
- model.compile(loss='mse',
- optimizer=optimizer,
+ model.compile(loss='mse', optimizer=optimizer,
  metrics=['mse']) # for regression problems, mean squared error (MSE) is often employed
  return model
 
@@ -73,27 +72,41 @@ model = build_model1_one_hidden_layer()
 print('Here is a summary of this model: ')
 model.summary()
 
+# example of working code
 example_batch = normedTrainData[:10] # take the first 10 data points from the training data.
 example_result = model.predict(example_batch)
 print (example_result)
 
-# print( train_dataset.shape )
-# print( temp_test_dataset.shape )
-# print( test_dataset.shape )
-# print( valid_dataset.shape )
+# EPOCHS = 1
+# batch_size = 32
 
-# print(f"Display the datatype of the test_dataset: {type(test_dataset)}")
-# print(f" Train dataset       : {train_dataset.shape}")
-# print(f" Test dataset       : {test_dataset.shape}")
-# print(f" Validation dataset : {valid_dataset.shape}")
+# with tf.device('/CPU:0'): 
+#   history = model.fit(
+#    normedTrainData,
+#    trainLabels,
+#    batch_size = batch_size,
+#    epochs=EPOCHS, 
+#    verbose=2,
+#    shuffle=True,
+#    steps_per_epoch = int(normedTrainData.shape[0] / batch_size) ,
+#    validation_data = (normedValidDataset, validLabels),
+#    )
+  #stepsPerEpoch divides dataset by batch size
+
+# print(f"Display the datatype of the test_dataset: {type(testDataset)}")
+# print(f" Train dataset       : {trainDataset.shape}")
+# print(f" Test dataset       : {testDataset.shape}")
+# print(f" Validation dataset : {validDataset.shape}")
 # print(f'No of rows/columns in the dataset: {d.shape}')
 # 1529/5
 
 # print (d.info()) 
 # print (d.dtypes)
 # print(d.head)
-# print (train_labels)
-# print (type(train_samples))
-# print (train_labels)
-# print (train_samples) 
+# print (trainLabels)
+# print (trainDataset[])
+# print (type(testDataset))
+# print (type(validDataset))
+# print (trainLabels)
+# print (trainSamples) 
 # print (d)
