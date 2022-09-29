@@ -10,6 +10,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Activation, Dense, BatchNormalization,  Dropout
 from tensorflow.keras import optimizers
 from tensorflow.keras.metrics import categorical_crossentropy
+from tensorflow.keras.metrics import categorical_accuracy
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
@@ -63,54 +64,61 @@ normedTrainStats = scaler.fit_transform(trainStats)
 # scaler.fit_transform(d)
 # standardization gets the mean of values to 0 and the variance to 1
 
-# def build_model1_one_hidden_layer():
-model = Sequential() 
-model.add(Dense(8, input_shape = (normedTrainData.shape[1],)))
-model.add(Dense(32,Activation('relu'))) 
-model.add(Dense(3)) 
+def build_model1_one_hidden_layer():
+ model = Sequential() 
+ model.add(Dense(8, input_shape = (normedTrainData.shape[1],)))
+ model.add(Dense(32,Activation('relu'))) 
+ model.add(Dense(1)) 
  
-# #  learning_rate = 0.001
-# #  optimizer = optimizers.Adam(learning_rate)
-# #  model.compile(loss='mse', optimizer=optimizer,
-# #  metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
-# #  return model
-
-model.compile(optimizer='adam',
-loss=tf.keras.losses.MeanSquaredError(),
-metrics=['accuracy'])
-model.fit(normedTrainData, trainLabels, epochs=10)
+ learning_rate = 0.001
+ optimizer = optimizers.Adam(learning_rate)
+ model.compile(loss='mse', optimizer=optimizer,
+ metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
+ return model
 
 # accuracy bij metrics gebruiken - hier kun je zien of hij preciezer wordt
 
-# model = build_model1_one_hidden_layer()
-# print('Here is a summary of this model: ')
-# model.summary()
+model = build_model1_one_hidden_layer()
+print('Here is a summary of this model: ')
+model.summary()
 
 # example of working code
 # example_batch = normedTrainData[:10] # take the first 10 data points from the training data.
 # example_result = model.predict(example_batch)
 # print (example_result)
 
-# EPOCHS = 1
-# batch_size = 32
+EPOCHS = 10
+batch_size = 32
 
-# with tf.device('/CPU:0'): 
-#   history = model.fit(normedTrainData, trainLabels, epochs=10)
-   
-   
-  #  normedTrainData,
-  #  trainLabels,
-  #  batch_size = batch_size,
-  #  epochs=EPOCHS, 
-  #  verbose=2,
-  #  shuffle=True,
-  #  steps_per_epoch = int(normedTrainData.shape[0] / batch_size) ,
-  #  validation_data = (normedValidDataset, validLabels),
-  #  )
-
+with tf.device('/CPU:0'): 
+  history = model.fit(
+  normedTrainData,
+  trainLabels,
+  batch_size = batch_size,
+  epochs=EPOCHS, 
+  verbose=2,
+  shuffle=True,
+  steps_per_epoch = int(normedTrainData.shape[0] / batch_size) ,
+  validation_data = (normedValidDataset, validLabels),
+  )
   
-  #Ruud stepsPerEpoch divides dataset by batch size
-  #stuurhoek waarde tussen -1 en -1
+example_batch = normedTrainData[:10]
+example_result = model.predict(example_batch)
+print('Training predicted values: ')
+print(example_result)
+
+print('The actual labels: ')
+print (trainLabels[:10])
+
+example_batch = normedTestData[:10]
+example_result = model.predict(example_batch)
+print('Testing predicted values: ')
+print(example_result)
+
+print('The actual labels: ')
+print (testLabels[:10])
+
+  #Ruud #stuurhoek waarde tussen -1 en -1 is je gewenste uitkomst
 
 # print(f"Display the datatype of the test_dataset: {type(testDataset)}")
 # print(f" Train dataset       : {trainDataset.shape}")
