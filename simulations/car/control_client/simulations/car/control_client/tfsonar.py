@@ -87,7 +87,7 @@ model.summary()
 # example_result = model.predict(example_batch)
 # print (example_result)
 
-EPOCHS = 10
+EPOCHS = 1000
 batch_size = 32
 
 with tf.device('/CPU:0'): 
@@ -102,21 +102,21 @@ with tf.device('/CPU:0'):
   validation_data = (normedValidDataset, validLabels),
   )
   
-example_batch = normedTrainData[:10]
+example_batch = normedTrainData[:20]
 example_result = model.predict(example_batch)
 print('Training predicted values: ')
 print(example_result)
 
 print('The actual labels: ')
-print (trainLabels[:10])
+print (trainLabels[:20])
 
-example_batch = normedTestData[:10]
+example_batch = normedTestData[:20]
 example_result = model.predict(example_batch)
 print('Testing predicted values: ')
 print(example_result)
 
 print('The actual labels: ')
-print (testLabels[:10])
+print (testLabels[:20])
 
   #Ruud #stuurhoek waarde tussen -1 en -1 is je gewenste uitkomst
 
