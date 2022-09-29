@@ -13,7 +13,7 @@ from tensorflow.keras.metrics import categorical_crossentropy
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
-
+from sklearn.preprocessing import LabelEncoder
 
 d = pd.read_csv('./sonar.csv', index_col=0)
 d = d.astype(str)
@@ -41,10 +41,12 @@ trainStats = trainStats.transpose()
 # print (trainStats)
 
 trainLabels = trainDataset.pop('angle')
-
-
 testLabels = testDataset.pop('angle')
 validLabels = validDataset.pop('angle')
+lb = LabelEncoder()
+trainLabels = lb.fit_transform(trainLabels)
+testLabels = lb.fit_transform(testLabels)
+validLabels = lb.fit_transform(validLabels)
 
 # test normalizing vs standardizing
 # normalize
