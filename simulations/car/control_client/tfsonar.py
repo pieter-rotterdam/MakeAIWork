@@ -57,6 +57,8 @@ normedTestData = scaler.fit_transform(testDataset)
 normedValidDataset = scaler.fit_transform(validDataset)
 normedTrainStats = scaler.fit_transform(trainStats)
 # print (normedTrainStats)
+
+
 # normalizing helps the algorythms in the model i.e. less spiky  data
 
 #standardize
@@ -109,7 +111,7 @@ def build_model3_five_hidden_layers():
  model.add(Dense(64,Activation('relu'))) 
  model.add(Dense(1)) 
  
- learning_rate = 0.001
+ learning_rate = 0.01
  optimizer = optimizers.Adam(learning_rate)
  model.compile(loss='mse', optimizer=optimizer,
  metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
