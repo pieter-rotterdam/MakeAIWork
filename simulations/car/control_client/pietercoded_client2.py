@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 
 d = pd.read_csv('./simulations/car/control_client/sonar.csv', index_col=0)
 d = d.astype(str)
-checkpoint_path = "./simulations/car/control_client/angle_prediction1.ckpt"
+checkpoint_path = "./simulations/car/control_client/angle_prediction2.ckpt"
 
 for itm in d.head():
   d[itm] = d[itm].str.split(',')
@@ -64,21 +64,24 @@ stdTrainStats = scaler.fit_transform(trainStats)
 # print(f" Train dataset       : {stdTrainData.shape}")
 # breakpoint ()
 
-def build_model1_one_hidden_layer():
- model = Sequential() 
- model.add(Dense(3, input_shape = (stdTrainData.shape[1],))) 
- model.add(Dense(32,Activation('relu'))) 
- model.add(Dense(1)) 
+def build_model2_three_hidden_layers():
+ model2 = Sequential() 
+ model2.add(Dense(3, input_shape = (stdTrainData.shape[1],)))
+ model2.add(Dense(32,Activation('relu'))) 
+ model2.add(Dense(64,Activation('relu')))
+ model2.add(Dense(128,Activation('relu'))) 
+ model2.add(Dense(1)) 
  
  learning_rate = 0.01
  optimizer = optimizers.Adam(learning_rate)
- model.compile(loss='mse', optimizer=optimizer,
+ model2.compile(loss='mse', optimizer=optimizer,
  metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
- return model
-# accuracy bij metrics gebruiken - hier kun je zien of hij preciezer wordt
-model = build_model1_one_hidden_layer()
+ return model2
+
+model2 = build_model2_three_hidden_layers()
+#model.load_weights('./model_weights/my_checkpoint')
 print('Here is a summary of this model: ')
-model.summary()
+model2.summary()
 
 ckpt_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
 monitor='val_loss', # or val_accuracy if you have it.
@@ -90,7 +93,7 @@ EPOCHS = 15 # hoger gaf geen verbetering
 batch_size = 32
 
 with tf.device('/CPU:0'): 
-  history = model.fit(
+  history = model2.fit(
   stdTrainData,
   trainLabels,
   batch_size = batch_size,
@@ -101,20 +104,20 @@ with tf.device('/CPU:0'):
   validation_data = (stdValidDataset, validLabels),
   callbacks=[tfdocs.modeling.EpochDots(), ckpt_callback],
   )
-model.save('./simulations/car/control_client/sonarmodel1.h5')
-model.save_weights('./model_weights/my_checkpoint')
+model2.save('./simulations/car/control_client/sonarmodel2.h5')
+model2.save_weights('./model_weights/my_checkpoint2')
 
 example_batch = stdTrainData[:10]
-example_result = model.predict(example_batch)
-print('Training predicted values one layer: ')
+example_result = model2.predict(example_batch)
+print('Training predicted values 3 layers: ')
 print(example_result)
 
-print('The actual labels one layer: ')
+print('The actual labels 3 layers: ')
 print (trainLabels[:10])
 
 plotter = tfdocs.plots.HistoryPlotter(smoothing_std=2)
 plotter.plot({'Basic': history}, metric = 'accuracy')
-plt.ylim([0.7, 0.9])
+plt.ylim([0.8, 0.9])
 plt.ylabel('Angle [angle]')
 plt.show()
 
@@ -123,6 +126,7 @@ plt.show()
 # print(f" Test dataset       : {testDataset.shape}")
 # print(f" Validation dataset : {validDataset.shape}")
 # print(f'No of rows/columns in the dataset: {d.shape}')
+
 
 # print (d.info()) 
 # print (d.dtypes)

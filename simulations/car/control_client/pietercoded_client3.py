@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 
 d = pd.read_csv('./simulations/car/control_client/sonar.csv', index_col=0)
 d = d.astype(str)
-checkpoint_path = "./simulations/car/control_client/angle_prediction1.ckpt"
+checkpoint_path = "./simulations/car/control_client/angle_prediction3.ckpt"
 
 for itm in d.head():
   d[itm] = d[itm].str.split(',')
@@ -64,33 +64,36 @@ stdTrainStats = scaler.fit_transform(trainStats)
 # print(f" Train dataset       : {stdTrainData.shape}")
 # breakpoint ()
 
-def build_model1_one_hidden_layer():
- model = Sequential() 
- model.add(Dense(3, input_shape = (stdTrainData.shape[1],))) 
- model.add(Dense(32,Activation('relu'))) 
- model.add(Dense(1)) 
+def build_model3_five_hidden_layers():
+ model3 = Sequential() 
+ model3.add(Dense(3, input_shape = (stdTrainData.shape[1],)))
+ model3.add(Dense(64,Activation('relu'))) 
+ model3.add(Dense(64,Activation('relu')))
+ model3.add(Dense(64,Activation('relu'))) 
+ model3.add(Dense(64,Activation('relu'))) 
+ model3.add(Dense(64,Activation('relu'))) 
+ model3.add(Dense(1)) 
  
  learning_rate = 0.01
  optimizer = optimizers.Adam(learning_rate)
- model.compile(loss='mse', optimizer=optimizer,
+ model3.compile(loss='mse', optimizer=optimizer,
  metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
- return model
-# accuracy bij metrics gebruiken - hier kun je zien of hij preciezer wordt
-model = build_model1_one_hidden_layer()
+ return model3
+
+model3 = build_model3_five_hidden_layers()
 print('Here is a summary of this model: ')
-model.summary()
+model3.summary()
 
 ckpt_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
 monitor='val_loss', # or val_accuracy if you have it.
 save_best_only=True, # Default false. If you don't change the file name then the output will be overritten at each step and only the last model will be saved.
 save_weights_only=True, # True => model.save_weights (weights and no structure, you need JSON file for structure), False => model.save (saves weights & structure)
 verbose=0,)
-
 EPOCHS = 15 # hoger gaf geen verbetering
 batch_size = 32
 
 with tf.device('/CPU:0'): 
-  history = model.fit(
+  history = model3.fit(
   stdTrainData,
   trainLabels,
   batch_size = batch_size,
@@ -101,15 +104,15 @@ with tf.device('/CPU:0'):
   validation_data = (stdValidDataset, validLabels),
   callbacks=[tfdocs.modeling.EpochDots(), ckpt_callback],
   )
-model.save('./simulations/car/control_client/sonarmodel1.h5')
-model.save_weights('./model_weights/my_checkpoint')
+model3.save('./simulations/car/control_client/sonarmodel3.h5')
+model3.save_weights('./model_weights/my_checkpoint3')
 
 example_batch = stdTrainData[:10]
-example_result = model.predict(example_batch)
-print('Training predicted values one layer: ')
+example_result = model3.predict(example_batch)
+print('Training predicted values 5 layers: ')
 print(example_result)
 
-print('The actual labels one layer: ')
+print('The actual labels 5 layers: ')
 print (trainLabels[:10])
 
 plotter = tfdocs.plots.HistoryPlotter(smoothing_std=2)
@@ -123,6 +126,26 @@ plt.show()
 # print(f" Test dataset       : {testDataset.shape}")
 # print(f" Validation dataset : {validDataset.shape}")
 # print(f'No of rows/columns in the dataset: {d.shape}')
+
+# print (d.info()) 
+# print (d.dtypes)
+# print(d.head)
+# print (trainLabels)
+# print (trainDataset)
+# print (type(testDataset))
+# print (type(validDataset))
+# print (trainLabels)
+# print (trainSamples) 
+# print (d)
+
+#plt.show()
+
+# print(f"Display the datatype of the test_dataset: {type(testDataset)}")
+# print(f" Train dataset       : {trainDataset.shape}")
+# print(f" Test dataset       : {testDataset.shape}")
+# print(f" Validation dataset : {validDataset.shape}")
+# print(f'No of rows/columns in the dataset: {d.shape}')
+
 
 # print (d.info()) 
 # print (d.dtypes)
