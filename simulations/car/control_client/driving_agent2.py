@@ -38,6 +38,9 @@ import socket_wrapper as sw
 # module die zorgt voor zenden/ontvangen van informatie tussen nodes
 import parameters as pm
 
+model_sonar_path = './simulations/car/control_client/sonarmodel2'
+model_lidar_path = './simulations/car/control_client/sonarmodel2'
+
 class HardcodedClient:
     def __init__ (self):
         self.steeringAngle = 0
@@ -95,30 +98,19 @@ class HardcodedClient:
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
 
     def sonarSweep (self):
-        obstacleDistances = [pm.finity for sectorIndex in range (3)] #startpunt is distance 20m
-        obstacleAngles = [0 for sectorIndex in range (3)] #er zijn 3 afstanden op -1, 0 en 1
-        
-        for sectorIndex in (-1, 0, 1):
-            sonarDistance = self.sonarDistances [sectorIndex]
-            sonarAngle = 2 * self.halfMiddleApertureAngle * sectorIndex
-            
-            if sonarDistance < obstacleDistances [sectorIndex]: #als sonard
-                obstacleDistances [sectorIndex] = sonarDistance
-                obstacleAngles [sectorIndex] = sonarAngle
+        # steering_angle_model = self.model.predict(np.array([self.sonarDistances]))
 
-        if obstacleDistances [-1] > obstacleDistances [0]:
-            leftIndex = -1
-        else:
-            leftIndex = 0
-           
-        if obstacleDistances [1] > obstacleDistances [0]:
-            rightIndex = 1
-        else:
-            rightIndex = 0
-           
-        """_summary_
-        """        self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
-        self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
+        # if prediction <.5, self.steeringAngle = -22 #uitkomst onder .5 = links
+        # elif prediction <1.5, self.steeringAngle = 0 # uitkomst tussen .5 en 1.5 = rechtdoor
+        # elif steeringangle = self.steeringAngle = 22# uitkomst boven 1.5 = rechts
+      
+
+UITWERKEN!!!!
+
+       
+        # self.steeringAngle = float(steering_angle_model[0][0]) # koppelen
+        # # print(steering_angle_model[0][0])
+        # self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
 
     def sweep (self):
         if hasattr (self, 'lidarDistances'):

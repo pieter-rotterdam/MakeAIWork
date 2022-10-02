@@ -24,7 +24,6 @@ It is meant for training purposes only.
 
 Removing this header ends your license.
 '''
-
 import time as tm
 import traceback as tb
 import math as mt
@@ -39,7 +38,8 @@ ss.path +=  [os.path.abspath (relPath) for relPath in  ('..',)]
 import socket_wrapper as sw
 import parameters as pm
 
-model_sonar_path = './simulations/car/control_client/sonarmodel'
+model_sonar_path = './simulations/car/control_client/sonarmodel2'
+model_lidar_path = './simulations/car/control_client/sonarmodel2'
 
 class DrivingAgent:
 
@@ -105,14 +105,31 @@ class DrivingAgent:
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle) # bepaald snelheid op basis van de stuurhoek
 
     def sonarSweep (self):
+breaking()
 
 
-  #      steering_angle_model = self.model.predict(np.array([self.sonarDistances]))#steering angle uit model sonar distance ophalen !AANPASSEN NAAR PIETER!
-        self.steeringAngle = float(steering_angle_model[0][0]) # koppelen
-        # print(steering_angle_model[0][0])
+    obstacleDistances = [pm.finity for sectorIndex in range (3)]  #obstacle is 20 here
+        obstacleAngles = [0 for sectorIndex in range (3)] #obstacle angle is 0 here
+        
+        for sectorIndex in (-1, 0, 1): #left sensor, middle sensor, right sensor
+            sonarDistance = self.sonarDistances [sectorIndex] #receives distance socket wrapper
+            sonarAngle = 2 * self.halfMiddleApertureAngle * sectorIndex #receives distance socket wrapper
+            
+            if sonarDistance < obstacleDistances [sectorIndex]:
+                obstacleDistances [sectorIndex] = sonarDistance
+                obstacleAngles [sectorIndex] = sonarAngle
+
+        if obstacleDistances [-1] > obstacleDistances [0]:
+            leftIndex = -1
+        else:
+            leftIndex = 0
            
-
-            self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
+        if obstacleDistances [1] > obstacleDistances [0]:
+            rightIndex = 1
+        else:
+            rightIndex = 0
+           
+        self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
 
     def sweep (self):
@@ -121,6 +138,18 @@ class DrivingAgent:
         else:
             self.sonarSweep ()
 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
     def output (self):
         actuators = {
             'steeringAngle': self.steeringAngle,

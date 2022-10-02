@@ -33,4 +33,4 @@ sonarInputDim = 3
 sampleFileName = 'sonar.samples.csv'
 
 def getTargetVelocity (steeringAngle):
-    return (90 - abs (steeringAngle)) / 60
+    return (150 - abs (steeringAngle)) / 60

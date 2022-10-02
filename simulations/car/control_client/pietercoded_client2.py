@@ -67,8 +67,7 @@ def build_model2_three_hidden_layers():
  model2.add(Dense(128,Activation('relu'))) 
  model2.add(Dense(256,Activation('relu')))
  model2.add(Dense(512,Activation('relu'))) 
- model2.add(Dense(1)) 
- 
+ model2.add(Dense(1))
  learning_rate = 0.001
  optimizer = optimizers.Adam(learning_rate)
  model2.compile(loss='mse', optimizer=optimizer,
@@ -76,7 +75,7 @@ def build_model2_three_hidden_layers():
  return model2
 
 model2 = build_model2_three_hidden_layers()
-#model.load_weights('./model_weights/my_checkpoint')
+#model.load_weights('./model_weights/my_checkpoint') voor testing cascading models
 print('Here is a summary of this model: ')
 model2.summary()
 
@@ -111,6 +110,10 @@ print(example_result)
 
 print('The actual labels 3 layers: ')
 print (trainLabels[:10])
+
+prediction = model2.predict(stdTrainData)
+print (stdTrainData)
+print (prediction) # komt eruit als np array
 
 plotter = tfdocs.plots.HistoryPlotter(smoothing_std=2)
 plotter.plot({'Basic': history}, metric = 'accuracy')
