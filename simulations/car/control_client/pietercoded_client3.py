@@ -21,13 +21,10 @@ from sklearn.preprocessing import LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-d = pd.read_csv('./simulations/car/control_client/sonar.csv', index_col=0)
-d = d.astype(str)
+d = pd.read_csv ('./simulations/car/control_client/sonar.samples525.csv', sep=' ', names=["dist1","dist2","dist3","angle"])
+# d.to_csv('./simulations/car/control_client/sonartest.csv', index=False)
 checkpoint_path = "./simulations/car/control_client/angle_prediction3.ckpt"
-
-for itm in d.head():
-  d[itm] = d[itm].str.split(',')
-d = d.apply(pd.Series.explode)
+# print (d)
 
 # print (d.dtypes)
 # d.to_csv('sonar.csv', index=False)
@@ -67,11 +64,11 @@ stdTrainStats = scaler.fit_transform(trainStats)
 def build_model3_five_hidden_layers():
  model3 = Sequential() 
  model3.add(Dense(3, input_shape = (stdTrainData.shape[1],)))
+ model3.add(Dense(16,Activation('relu'))) 
+ model3.add(Dense(32,Activation('relu')))
  model3.add(Dense(64,Activation('relu'))) 
- model3.add(Dense(64,Activation('relu')))
- model3.add(Dense(64,Activation('relu'))) 
- model3.add(Dense(64,Activation('relu'))) 
- model3.add(Dense(64,Activation('relu'))) 
+ model3.add(Dense(32,Activation('relu'))) 
+ model3.add(Dense(16,Activation('relu'))) 
  model3.add(Dense(1)) 
  
  learning_rate = 0.01

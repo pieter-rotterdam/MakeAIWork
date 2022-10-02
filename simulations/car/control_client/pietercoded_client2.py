@@ -21,13 +21,10 @@ from sklearn.preprocessing import LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-d = pd.read_csv('./simulations/car/control_client/sonar.csv', index_col=0)
-d = d.astype(str)
+d = pd.read_csv ('./simulations/car/control_client/sonar.samples525.csv', sep=' ', names=["dist1","dist2","dist3","angle"])
+# d.to_csv('./simulations/car/control_client/sonartest.csv', index=False)
 checkpoint_path = "./simulations/car/control_client/angle_prediction2.ckpt"
-
-for itm in d.head():
-  d[itm] = d[itm].str.split(',')
-d = d.apply(pd.Series.explode)
+# print (d)
 
 # print (d.dtypes)
 # d.to_csv('sonar.csv', index=False)
@@ -67,12 +64,12 @@ stdTrainStats = scaler.fit_transform(trainStats)
 def build_model2_three_hidden_layers():
  model2 = Sequential() 
  model2.add(Dense(3, input_shape = (stdTrainData.shape[1],)))
- model2.add(Dense(32,Activation('relu'))) 
- model2.add(Dense(64,Activation('relu')))
  model2.add(Dense(128,Activation('relu'))) 
+ model2.add(Dense(256,Activation('relu')))
+ model2.add(Dense(512,Activation('relu'))) 
  model2.add(Dense(1)) 
  
- learning_rate = 0.01
+ learning_rate = 0.001
  optimizer = optimizers.Adam(learning_rate)
  model2.compile(loss='mse', optimizer=optimizer,
  metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
@@ -117,7 +114,7 @@ print (trainLabels[:10])
 
 plotter = tfdocs.plots.HistoryPlotter(smoothing_std=2)
 plotter.plot({'Basic': history}, metric = 'accuracy')
-plt.ylim([0.8, 0.9])
+plt.ylim([0.7, 0.85])
 plt.ylabel('Angle [angle]')
 plt.show()
 

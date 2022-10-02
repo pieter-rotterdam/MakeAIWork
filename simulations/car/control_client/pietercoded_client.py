@@ -21,16 +21,12 @@ from sklearn.preprocessing import LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-d = pd.read_csv('./simulations/car/control_client/sonar.csv', index_col=0)
-d = d.astype(str)
+d = pd.read_csv ('./simulations/car/control_client/sonar.samples525.csv', sep=' ', names=["dist1","dist2","dist3","angle"])
+# d.to_csv('./simulations/car/control_client/sonartest.csv', index=False)
 checkpoint_path = "./simulations/car/control_client/angle_prediction1.ckpt"
+# print (d)
 
-for itm in d.head():
-  d[itm] = d[itm].str.split(',')
-d = d.apply(pd.Series.explode)
-
-# print (d.dtypes)
-# d.to_csv('sonar.csv', index=False)
+# breakpoint()
 
 tf.random.set_seed(1)
 # this is to get same results every expiriment
@@ -70,7 +66,7 @@ def build_model1_one_hidden_layer():
  model.add(Dense(32,Activation('relu'))) 
  model.add(Dense(1)) 
  
- learning_rate = 0.01
+ learning_rate = 0.001
  optimizer = optimizers.Adam(learning_rate)
  model.compile(loss='mse', optimizer=optimizer,
  metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
