@@ -119,8 +119,8 @@ class HardcodedClient:
            
         self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
-        print (self.steeringAngle)
-        print (type(self.steeringAngle))
+        # print (self.steeringAngle)
+        # print (type(self.steeringAngle))
 
     def sweep (self):
         if hasattr (self, 'lidarDistances'):

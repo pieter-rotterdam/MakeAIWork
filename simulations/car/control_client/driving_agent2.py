@@ -133,17 +133,11 @@ class HardcodedClient:
 
         steering_angle_model = self.model.predict([self.sonarDistances])
         self.steeringAngle = float(steering_angle_model[0][0])
+        # if self.steeringAngle < 0.5: self.steeringAngle = -22
+        # elif self.steeringAngle < 1.5: self.steeringAngle = 0
+        # elif self.steeringAngle > 1.5: self.steeringAngle = 22
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
         
-        # if prediction <.5, self.steeringAngle = -22 #uitkomst onder .5 = links
-        # elif prediction <1.5, self.steeringAngle = 0 # uitkomst tussen .5 en 1.5 = rechtdoor
-        # elif steeringangle = self.steeringAngle = 22# uitkomst boven 1.5 = rechts
-      
-       
-        # self.steeringAngle = float(steering_angle_model[0][0]) # koppelen
-        # # print(steering_angle_model[0][0])
-        # self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
-
     def sweep (self):
         if hasattr (self, 'lidarDistances'):
             self.lidarSweep ()
@@ -158,5 +152,29 @@ class HardcodedClient:
 
         self.socketWrapper.send (actuators)
 
+    def logLidarTraining (self):
+        sample = [pm.finity for entryIndex in range (pm.lidarInputDim + 1)]
+
+        for lidarAngle in range (-self.halfApertureAngle, self.halfApertureAngle):
+            sectorIndex = round (lidarAngle / self.sectorAngle)
+            sample [sectorIndex] = min (sample [sectorIndex], self.lidarDistances [lidarAngle])
+
+        sample [-1] = self.steeringAngle
+        print (*sample, file = self.sampleFile)
+
+    def logSonarTraining (self):
+        sample = [pm.finity for entryIndex in range (pm.sonarInputDim + 1)]
+
+        for entryIndex, sectorIndex in ((2, -1), (0, 0), (1, 1)):
+            sample [entryIndex] = self.sonarDistances [sectorIndex]
+
+        sample [-1] = self.steeringAngle
+        print (*sample, file = self.sampleFile)
+
+    def logTraining (self):
+        if hasattr (self, 'lidarDistances'):
+            self.logLidarTraining ()
+        else:
+            self.logSonarTraining ()
 
 HardcodedClient ()

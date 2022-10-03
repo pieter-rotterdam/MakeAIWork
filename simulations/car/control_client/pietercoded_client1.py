@@ -11,6 +11,7 @@ from tensorflow.keras.layers import Activation, Dense, BatchNormalization,  Drop
 from tensorflow.keras import optimizers
 from tensorflow.keras.metrics import categorical_crossentropy
 from tensorflow.keras.metrics import categorical_accuracy
+import keras_tuner as kt
 import tensorflow_docs as tfdocs
 import tensorflow_docs.plots
 import tensorflow_docs.modeling
@@ -21,12 +22,13 @@ from sklearn.preprocessing import LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-d = pd.read_csv ('./simulations/car/control_client/sonar.samples525.csv', sep=' ', names=["dist1","dist2","dist3","angle"])
+d = pd.read_csv ('./simulations/car/control_client/sonar.samples.csv', sep=' ', names=["dist1","dist2","dist3","angle"])
 # d.to_csv('./simulations/car/control_client/sonartest.csv', index=False)
 checkpoint_path = "./simulations/car/control_client/angle_prediction1.ckpt"
 # print (d)
 
-# breakpoint()
+# print (d.dtypes)
+# d.to_csv('sonar.csv', index=False)
 
 tf.random.set_seed(1)
 # this is to get same results every expiriment
@@ -98,19 +100,24 @@ with tf.device('/CPU:0'):
   callbacks=[tfdocs.modeling.EpochDots(), ckpt_callback],
   )
 model.save('./simulations/car/control_client/sonarmodel1.h5')
-model.save_weights('./model_weights/my_checkpoint')
+model.save_weights('./model_weights/my_checkpoint1')
 
-example_batch = stdTrainData[:10]
+example_batch = stdTrainData[:1]
 example_result = model.predict(example_batch)
-print('Training predicted values one layer: ')
+print('Training predicted values 1 layer: ')
+print(example_batch)
 print(example_result)
 
-print('The actual labels one layer: ')
+print('The actual labels 1 layer: ')
 print (trainLabels[:10])
+
+prediction = model.predict(stdTrainData)
+print (stdTrainData)
+print (prediction) # komt eruit als np array
 
 plotter = tfdocs.plots.HistoryPlotter(smoothing_std=2)
 plotter.plot({'Basic': history}, metric = 'accuracy')
-plt.ylim([0.7, 0.9])
+plt.ylim([0.7, 0.85])
 plt.ylabel('Angle [angle]')
 plt.show()
 
@@ -119,6 +126,7 @@ plt.show()
 # print(f" Test dataset       : {testDataset.shape}")
 # print(f" Validation dataset : {validDataset.shape}")
 # print(f'No of rows/columns in the dataset: {d.shape}')
+
 
 # print (d.info()) 
 # print (d.dtypes)

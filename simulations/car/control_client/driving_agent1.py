@@ -24,46 +24,70 @@ It is meant for training purposes only.
 
 Removing this header ends your license.
 '''
+
 import time as tm
-import traceback as tb
+import traceback as tb # a stack trace prints all the calls prior to the function that raised an exception. In all cases, the last line of a stack trace prints the most valuable information as here the error gets printed.
 import math as mt
-import sys as ss
-import os
-import socket as sc
+import sys as ss # The sys module in Python provides various functions and variables that are used to manipulate different parts of the Python runtime environment.
+import os # The OS module in Python provides functions for interacting with the operating system b.v. get current directory
+import socket as sc # Socket programming is a way of connecting two nodes on a network to communicate with each other. 
 import tensorflow as tf
+
+
+from re import X
+from time import time
 import numpy as np
+import pandas as pd
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Activation, Dense, BatchNormalization,  Dropout
+from tensorflow.keras import optimizers
+from tensorflow.keras.metrics import categorical_crossentropy
+from tensorflow.keras.metrics import categorical_accuracy
+import keras_tuner as kt
+import tensorflow_docs as tfdocs
+import tensorflow_docs.plots
+import tensorflow_docs.modeling
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 ss.path +=  [os.path.abspath (relPath) for relPath in  ('..',)] 
 
 import socket_wrapper as sw
+# module die zorgt voor zenden/ontvangen van informatie tussen nodes
 import parameters as pm
 
-model_sonar_path = './simulations/car/control_client/sonarmodel2'
-model_lidar_path = './simulations/car/control_client/sonarmodel2'
+model_sonar_path = './simulations/car/control_client/sonarmodel1'
+model_lidar_path = './simulations/car/control_client/sonarmodel1'
 
-class DrivingAgent:
-
+class HardcodedClient:
     def __init__ (self):
         self.model = None
         self.steeringAngle = 0
+        self.targetVelocity = 0
 
         with open (pm.sampleFileName, 'w') as self.sampleFile:
-            with sc.socket (*sw.socketType) as self.clientSocket:
+            with sc.socket (*sw.socketType) as self.clientSocket:       #communicatie opzetten
                 self.clientSocket.connect (sw.address)
                 self.socketWrapper = sw.SocketWrapper (self.clientSocket)
                 self.halfApertureAngle = False
 
                 while True:
-                    self.input ()
+                    self.input () 
                     self.sweep ()
                     self.output ()
                     self.logTraining ()
                     tm.sleep (0.02)
 
     def input (self):
-        sensors = self.socketWrapper.recv ()
+        sensors = self.socketWrapper.recv () # via socketwrapper sensor info krijgen
 
-        if not self.halfApertureAngle:
+        if not self.halfApertureAngle: # de hoek die de sensor kan zien
             self.halfApertureAngle = sensors ['halfApertureAngle']
             self.sectorAngle = 2 * self.halfApertureAngle / pm.lidarInputDim
             self.halfMiddleApertureAngle = sensors ['halfMiddleApertureAngle']
@@ -71,12 +95,12 @@ class DrivingAgent:
         if 'lidarDistances' in sensors:
             self.lidarDistances = sensors ['lidarDistances']
             if self.model==None:
-                self.model = tf.keras.models.load_model(model_lidar_path) #lidar uit model path            
+                self.model = tf.keras.models.load_model(model_lidar_path) #lidar uit model path changed code            
         else:
             self.sonarDistances = sensors ['sonarDistances']
-            if self.model==None:
-                self.model = tf.keras.models.load_model(model_sonar_path) #sonar uit model path
 
+            if self.model==None:
+                self.model = tf.keras.models.load_model(model_sonar_path) #sonar uit model path changed code
 
     def lidarSweep (self):
         nearestObstacleDistance = pm.finity
@@ -99,57 +123,27 @@ class DrivingAgent:
                 nextObstacleDistance = lidarDistance
                 nextObstacleAngle = lidarAngle
            
-        targetObstacleDistance = (nearestObstacleDistance + nextObstacleDistance) / 2 # ik weet de hoek tussen beide pylonnen, en ga daar midden tussendoor rijden
+        targetObstacleDistance = (nearestObstacleDistance + nextObstacleDistance) / 2
 
-        self.steeringAngle = (nearestObstacleAngle + nextObstacleAngle) / 2  # steeringangle wordt bepaald door 2 pionnen
-        self.targetVelocity = pm.getTargetVelocity (self.steeringAngle) # bepaald snelheid op basis van de stuurhoek
+        self.steeringAngle = (nearestObstacleAngle + nextObstacleAngle) / 2
+        self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
+     
 
     def sonarSweep (self):
-breaking()
 
-
-    obstacleDistances = [pm.finity for sectorIndex in range (3)]  #obstacle is 20 here
-        obstacleAngles = [0 for sectorIndex in range (3)] #obstacle angle is 0 here
-        
-        for sectorIndex in (-1, 0, 1): #left sensor, middle sensor, right sensor
-            sonarDistance = self.sonarDistances [sectorIndex] #receives distance socket wrapper
-            sonarAngle = 2 * self.halfMiddleApertureAngle * sectorIndex #receives distance socket wrapper
-            
-            if sonarDistance < obstacleDistances [sectorIndex]:
-                obstacleDistances [sectorIndex] = sonarDistance
-                obstacleAngles [sectorIndex] = sonarAngle
-
-        if obstacleDistances [-1] > obstacleDistances [0]:
-            leftIndex = -1
-        else:
-            leftIndex = 0
-           
-        if obstacleDistances [1] > obstacleDistances [0]:
-            rightIndex = 1
-        else:
-            rightIndex = 0
-           
-        self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
+        steering_angle_model = self.model.predict([self.sonarDistances])
+        self.steeringAngle = steering_angle_model
+        # if self.steeringAngle < 0.5: self.steeringAngle = -22
+        # elif self.steeringAngle < 1.5: self.steeringAngle = 0
+        # elif self.steeringAngle > 1.5: self.steeringAngle = 22
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
-
+        
     def sweep (self):
         if hasattr (self, 'lidarDistances'):
             self.lidarSweep ()
         else:
             self.sonarSweep ()
 
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
     def output (self):
         actuators = {
             'steeringAngle': self.steeringAngle,
@@ -183,4 +177,4 @@ breaking()
         else:
             self.logSonarTraining ()
 
-DrivingAgent ()
+HardcodedClient ()
