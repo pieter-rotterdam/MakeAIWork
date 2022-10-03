@@ -31,6 +31,30 @@ import math as mt
 import sys as ss # The sys module in Python provides various functions and variables that are used to manipulate different parts of the Python runtime environment.
 import os # The OS module in Python provides functions for interacting with the operating system b.v. get current directory
 import socket as sc # Socket programming is a way of connecting two nodes on a network to communicate with each other. 
+import tensorflow as tf
+
+
+from re import X
+from time import time
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Activation, Dense, BatchNormalization,  Dropout
+from tensorflow.keras import optimizers
+from tensorflow.keras.metrics import categorical_crossentropy
+from tensorflow.keras.metrics import categorical_accuracy
+import keras_tuner as kt
+import tensorflow_docs as tfdocs
+import tensorflow_docs.plots
+import tensorflow_docs.modeling
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 ss.path +=  [os.path.abspath (relPath) for relPath in  ('..',)] 
 
@@ -38,9 +62,14 @@ import socket_wrapper as sw
 # module die zorgt voor zenden/ontvangen van informatie tussen nodes
 import parameters as pm
 
+model_sonar_path = './simulations/car/control_client/sonarmodel2'
+model_lidar_path = './simulations/car/control_client/sonarmodel2'
+
 class HardcodedClient:
     def __init__ (self):
+        self.model = None
         self.steeringAngle = 0
+        self.targetVelocity = 0
 
         with open (pm.sampleFileName, 'w') as self.sampleFile:
             with sc.socket (*sw.socketType) as self.clientSocket:       #communicatie opzetten
@@ -65,9 +94,13 @@ class HardcodedClient:
             
         if 'lidarDistances' in sensors:
             self.lidarDistances = sensors ['lidarDistances']
+            if self.model==None:
+                self.model = tf.keras.models.load_model(model_lidar_path) #lidar uit model path changed code            
         else:
             self.sonarDistances = sensors ['sonarDistances']
-            print (self.sonarDistances)
+
+            if self.model==None:
+                self.model = tf.keras.models.load_model(model_sonar_path) #sonar uit model path changed code
 
     def lidarSweep (self):
         nearestObstacleDistance = pm.finity
@@ -94,33 +127,22 @@ class HardcodedClient:
 
         self.steeringAngle = (nearestObstacleAngle + nextObstacleAngle) / 2
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
+     
 
     def sonarSweep (self):
-        obstacleDistances = [pm.finity for sectorIndex in range (3)] #startpunt is distance 20m
-        obstacleAngles = [0 for sectorIndex in range (3)] #er zijn 3 afstanden op -1, 0 en 1
-        
-        for sectorIndex in (-1, 0, 1):
-            sonarDistance = self.sonarDistances [sectorIndex]
-            sonarAngle = 2 * self.halfMiddleApertureAngle * sectorIndex
-            
-            if sonarDistance < obstacleDistances [sectorIndex]: #als sonard
-                obstacleDistances [sectorIndex] = sonarDistance
-                obstacleAngles [sectorIndex] = sonarAngle
 
-        if obstacleDistances [-1] > obstacleDistances [0]:
-            leftIndex = -1
-        else:
-            leftIndex = 0
-           
-        if obstacleDistances [1] > obstacleDistances [0]:
-            rightIndex = 1
-        else:
-            rightIndex = 0
-           
-        self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
+        steering_angle_model = self.model.predict([self.sonarDistances])
+        self.steeringAngle = float(steering_angle_model[0][0])
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
-        print (self.steeringAngle)
-        print (type(self.steeringAngle))
+        
+        # if prediction <.5, self.steeringAngle = -22 #uitkomst onder .5 = links
+        # elif prediction <1.5, self.steeringAngle = 0 # uitkomst tussen .5 en 1.5 = rechtdoor
+        # elif steeringangle = self.steeringAngle = 22# uitkomst boven 1.5 = rechts
+      
+       
+        # self.steeringAngle = float(steering_angle_model[0][0]) # koppelen
+        # # print(steering_angle_model[0][0])
+        # self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
 
     def sweep (self):
         if hasattr (self, 'lidarDistances'):
@@ -136,29 +158,5 @@ class HardcodedClient:
 
         self.socketWrapper.send (actuators)
 
-    def logLidarTraining (self):
-        sample = [pm.finity for entryIndex in range (pm.lidarInputDim + 1)]
-
-        for lidarAngle in range (-self.halfApertureAngle, self.halfApertureAngle):
-            sectorIndex = round (lidarAngle / self.sectorAngle)
-            sample [sectorIndex] = min (sample [sectorIndex], self.lidarDistances [lidarAngle])
-
-        sample [-1] = self.steeringAngle
-        print (*sample, file = self.sampleFile)
-
-    def logSonarTraining (self):
-        sample = [pm.finity for entryIndex in range (pm.sonarInputDim + 1)]
-
-        for entryIndex, sectorIndex in ((2, -1), (0, 0), (1, 1)):
-            sample [entryIndex] = self.sonarDistances [sectorIndex]
-
-        sample [-1] = self.steeringAngle
-        print (*sample, file = self.sampleFile)
-
-    def logTraining (self):
-        if hasattr (self, 'lidarDistances'):
-            self.logLidarTraining ()
-        else:
-            self.logSonarTraining ()
 
 HardcodedClient ()

@@ -24,50 +24,59 @@ It is meant for training purposes only.
 
 Removing this header ends your license.
 '''
-
 import time as tm
-import traceback as tb # a stack trace prints all the calls prior to the function that raised an exception. In all cases, the last line of a stack trace prints the most valuable information as here the error gets printed.
+import traceback as tb
 import math as mt
-import sys as ss # The sys module in Python provides various functions and variables that are used to manipulate different parts of the Python runtime environment.
-import os # The OS module in Python provides functions for interacting with the operating system b.v. get current directory
-import socket as sc # Socket programming is a way of connecting two nodes on a network to communicate with each other. 
+import sys as ss
+import os
+import socket as sc
+import tensorflow as tf
+import numpy as np
 
 ss.path +=  [os.path.abspath (relPath) for relPath in  ('..',)] 
 
 import socket_wrapper as sw
-# module die zorgt voor zenden/ontvangen van informatie tussen nodes
 import parameters as pm
 
-class HardcodedClient:
+model_sonar_path = './simulations/car/control_client/sonarmodel2'
+model_lidar_path = './simulations/car/control_client/sonarmodel2'
+
+class DrivingAgent:
+
     def __init__ (self):
+        self.model = None
         self.steeringAngle = 0
 
         with open (pm.sampleFileName, 'w') as self.sampleFile:
-            with sc.socket (*sw.socketType) as self.clientSocket:       #communicatie opzetten
+            with sc.socket (*sw.socketType) as self.clientSocket:
                 self.clientSocket.connect (sw.address)
                 self.socketWrapper = sw.SocketWrapper (self.clientSocket)
                 self.halfApertureAngle = False
 
                 while True:
-                    self.input () 
+                    self.input ()
                     self.sweep ()
                     self.output ()
                     self.logTraining ()
                     tm.sleep (0.02)
 
     def input (self):
-        sensors = self.socketWrapper.recv () # via socketwrapper sensor info krijgen
+        sensors = self.socketWrapper.recv ()
 
-        if not self.halfApertureAngle: # de hoek die de sensor kan zien
+        if not self.halfApertureAngle:
             self.halfApertureAngle = sensors ['halfApertureAngle']
             self.sectorAngle = 2 * self.halfApertureAngle / pm.lidarInputDim
             self.halfMiddleApertureAngle = sensors ['halfMiddleApertureAngle']
             
         if 'lidarDistances' in sensors:
             self.lidarDistances = sensors ['lidarDistances']
+            if self.model==None:
+                self.model = tf.keras.models.load_model(model_lidar_path) #lidar uit model path            
         else:
             self.sonarDistances = sensors ['sonarDistances']
-            print (self.sonarDistances)
+            if self.model==None:
+                self.model = tf.keras.models.load_model(model_sonar_path) #sonar uit model path
+
 
     def lidarSweep (self):
         nearestObstacleDistance = pm.finity
@@ -90,20 +99,23 @@ class HardcodedClient:
                 nextObstacleDistance = lidarDistance
                 nextObstacleAngle = lidarAngle
            
-        targetObstacleDistance = (nearestObstacleDistance + nextObstacleDistance) / 2
+        targetObstacleDistance = (nearestObstacleDistance + nextObstacleDistance) / 2 # ik weet de hoek tussen beide pylonnen, en ga daar midden tussendoor rijden
 
-        self.steeringAngle = (nearestObstacleAngle + nextObstacleAngle) / 2
-        self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
+        self.steeringAngle = (nearestObstacleAngle + nextObstacleAngle) / 2  # steeringangle wordt bepaald door 2 pionnen
+        self.targetVelocity = pm.getTargetVelocity (self.steeringAngle) # bepaald snelheid op basis van de stuurhoek
 
     def sonarSweep (self):
-        obstacleDistances = [pm.finity for sectorIndex in range (3)] #startpunt is distance 20m
-        obstacleAngles = [0 for sectorIndex in range (3)] #er zijn 3 afstanden op -1, 0 en 1
+breaking()
+
+
+    obstacleDistances = [pm.finity for sectorIndex in range (3)]  #obstacle is 20 here
+        obstacleAngles = [0 for sectorIndex in range (3)] #obstacle angle is 0 here
         
-        for sectorIndex in (-1, 0, 1):
-            sonarDistance = self.sonarDistances [sectorIndex]
-            sonarAngle = 2 * self.halfMiddleApertureAngle * sectorIndex
+        for sectorIndex in (-1, 0, 1): #left sensor, middle sensor, right sensor
+            sonarDistance = self.sonarDistances [sectorIndex] #receives distance socket wrapper
+            sonarAngle = 2 * self.halfMiddleApertureAngle * sectorIndex #receives distance socket wrapper
             
-            if sonarDistance < obstacleDistances [sectorIndex]: #als sonard
+            if sonarDistance < obstacleDistances [sectorIndex]:
                 obstacleDistances [sectorIndex] = sonarDistance
                 obstacleAngles [sectorIndex] = sonarAngle
 
@@ -119,8 +131,6 @@ class HardcodedClient:
            
         self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
-        print (self.steeringAngle)
-        print (type(self.steeringAngle))
 
     def sweep (self):
         if hasattr (self, 'lidarDistances'):
@@ -128,6 +138,18 @@ class HardcodedClient:
         else:
             self.sonarSweep ()
 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
     def output (self):
         actuators = {
             'steeringAngle': self.steeringAngle,
@@ -161,4 +183,4 @@ class HardcodedClient:
         else:
             self.logSonarTraining ()
 
-HardcodedClient ()
+DrivingAgent ()

@@ -1,0 +1,65 @@
+Here is a summary of this model: 
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense (Dense)               (None, 3)                 12        
+                                                                 
+ dense_1 (Dense)             (None, 32)                128       
+                                                                 
+ dense_2 (Dense)             (None, 64)                2112      
+                                                                 
+ dense_3 (Dense)             (None, 128)               8320      
+                                                                 
+ dense_4 (Dense)             (None, 1)                 129       
+                                                                 
+=================================================================
+Total params: 10,701
+Trainable params: 10,701
+Non-trainable params: 0
+_________________________________________________________________
+Epoch 1/15
+
+Epoch: 0, accuracy:0.7511,  loss:0.2646,  val_accuracy:0.8007,  val_loss:0.1115,  
+.28/28 - 0s - loss: 0.2646 - accuracy: 0.7511 - val_loss: 0.1115 - val_accuracy: 0.8007 - 419ms/epoch - 15ms/step
+Epoch 2/15
+.28/28 - 0s - loss: 0.0937 - accuracy: 0.8271 - val_loss: 0.0990 - val_accuracy: 0.8007 - 49ms/epoch - 2ms/step
+Epoch 3/15
+.28/28 - 0s - loss: 0.0882 - accuracy: 0.8226 - val_loss: 0.0859 - val_accuracy: 0.8137 - 49ms/epoch - 2ms/step
+Epoch 4/15
+.28/28 - 0s - loss: 0.0764 - accuracy: 0.8418 - val_loss: 0.0773 - val_accuracy: 0.8366 - 49ms/epoch - 2ms/step
+Epoch 5/15
+.28/28 - 0s - loss: 0.0755 - accuracy: 0.8508 - val_loss: 0.0791 - val_accuracy: 0.8235 - 39ms/epoch - 1ms/step
+Epoch 6/15
+.28/28 - 0s - loss: 0.0646 - accuracy: 0.8520 - val_loss: 0.0603 - val_accuracy: 0.8366 - 47ms/epoch - 2ms/step
+Epoch 7/15
+.28/28 - 0s - loss: 0.0474 - accuracy: 0.8497 - val_loss: 0.0600 - val_accuracy: 0.8333 - 48ms/epoch - 2ms/step
+Epoch 8/15
+.28/28 - 0s - loss: 0.0463 - accuracy: 0.8621 - val_loss: 0.0524 - val_accuracy: 0.8366 - 48ms/epoch - 2ms/step
+Epoch 9/15
+.28/28 - 0s - loss: 0.0484 - accuracy: 0.8554 - val_loss: 0.0597 - val_accuracy: 0.8333 - 42ms/epoch - 1ms/step
+Epoch 10/15
+.28/28 - 0s - loss: 0.0708 - accuracy: 0.8441 - val_loss: 0.0640 - val_accuracy: 0.8366 - 39ms/epoch - 1ms/step
+Epoch 11/15
+.28/28 - 0s - loss: 0.0482 - accuracy: 0.8497 - val_loss: 0.0552 - val_accuracy: 0.8399 - 37ms/epoch - 1ms/step
+Epoch 12/15
+.28/28 - 0s - loss: 0.0407 - accuracy: 0.8475 - val_loss: 0.0447 - val_accuracy: 0.8399 - 44ms/epoch - 2ms/step
+Epoch 13/15
+.28/28 - 0s - loss: 0.0419 - accuracy: 0.8655 - val_loss: 0.0491 - val_accuracy: 0.8366 - 39ms/epoch - 1ms/step
+Epoch 14/15
+.28/28 - 0s - loss: 0.0375 - accuracy: 0.8463 - val_loss: 0.0426 - val_accuracy: 0.8399 - 48ms/epoch - 2ms/step
+Epoch 15/15
+.28/28 - 0s - loss: 0.0348 - accuracy: 0.8565 - val_loss: 0.0513 - val_accuracy: 0.8399 - 38ms/epoch - 1ms/step
+Training predicted values 3 layers: 
+[[0.08512746]
+ [1.933813  ]
+ [0.9317013 ]
+ [0.9538826 ]
+ [0.9317013 ]
+ [0.8772938 ]
+ [0.9317013 ]
+ [1.4626175 ]
+ [1.470302  ]
+ [1.2120446 ]]
+The actual labels 3 layers: 
+[0 2 1 1 1 1 1 2 2 1]
