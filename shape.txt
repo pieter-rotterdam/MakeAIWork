@@ -1,0 +1,55 @@
+<class 'int'>
+3
+['__abs__', '__add__', '__and__', '__bool__', '__ceil__', '__class__', '__delattr__', '__dir__', '__divmod__', '__doc__', '__eq__', '__float__', '__floor__', '__floordiv__', '__format__', '__ge__', '__getattribute__', '__getnewargs__', '__gt__', '__hash__', '__index__', '__init__', '__init_subclass__', '__int__', '__invert__', '__le__', '__lshift__', '__lt__', '__mod__', '__mul__', '__ne__', '__neg__', '__new__', '__or__', '__pos__', '__pow__', '__radd__', '__rand__', '__rdivmod__', '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__', '__rlshift__', '__rmod__', '__rmul__', '__ror__', '__round__', '__rpow__', '__rrshift__', '__rshift__', '__rsub__', '__rtruediv__', '__rxor__', '__setattr__', '__sizeof__', '__str__', '__sub__', '__subclasshook__', '__truediv__', '__trunc__', '__xor__', 'as_integer_ratio', 'bit_length', 'conjugate', 'denominator', 'from_bytes', 'imag', 'numerator', 'real', 'to_bytes']
+Here is a summary of this model: 
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense (Dense)               (None, 3)                 12        
+                                                                 
+ dense_1 (Dense)             (None, 128)               512       
+                                                                 
+ dense_2 (Dense)             (None, 256)               33024     
+                                                                 
+ dense_3 (Dense)             (None, 512)               131584    
+                                                                 
+ dense_4 (Dense)             (None, 1)                 513       
+                                                                 
+=================================================================
+Total params: 165,645
+Trainable params: 165,645
+Non-trainable params: 0
+_________________________________________________________________
+Epoch 1/15
+
+Epoch: 0, accuracy:0.7233,  loss:0.7592,  val_accuracy:0.7419,  val_loss:0.2545,  
+.83/83 - 1s - loss: 0.7592 - accuracy: 0.7233 - val_loss: 0.2545 - val_accuracy: 0.7419 - 526ms/epoch - 6ms/step
+Epoch 2/15
+.83/83 - 0s - loss: 0.1002 - accuracy: 0.7985 - val_loss: 0.1648 - val_accuracy: 0.7631 - 140ms/epoch - 2ms/step
+Epoch 3/15
+.83/83 - 0s - loss: 0.0856 - accuracy: 0.8038 - val_loss: 0.2068 - val_accuracy: 0.7531 - 124ms/epoch - 1ms/step
+Epoch 4/15
+.83/83 - 0s - loss: 0.0661 - accuracy: 0.8215 - val_loss: 0.1981 - val_accuracy: 0.7855 - 123ms/epoch - 1ms/step
+Epoch 5/15
+.83/83 - 0s - loss: 0.0537 - accuracy: 0.8147 - val_loss: 0.1895 - val_accuracy: 0.8123 - 126ms/epoch - 2ms/step
+Epoch 6/15
+.83/83 - 0s - loss: 0.0451 - accuracy: 0.8257 - val_loss: 0.1970 - val_accuracy: 0.7922 - 130ms/epoch - 2ms/step
+Epoch 7/15
+.83/83 - 0s - loss: 0.0413 - accuracy: 0.8245 - val_loss: 0.1742 - val_accuracy: 0.8145 - 131ms/epoch - 2ms/step
+Epoch 8/15
+.83/83 - 0s - loss: 0.0376 - accuracy: 0.8245 - val_loss: 0.1574 - val_accuracy: 0.7955 - 143ms/epoch - 2ms/step
+Epoch 9/15
+.83/83 - 0s - loss: 0.0370 - accuracy: 0.8275 - val_loss: 0.1596 - val_accuracy: 0.8067 - 130ms/epoch - 2ms/step
+Epoch 10/15
+.83/83 - 0s - loss: 0.0384 - accuracy: 0.8219 - val_loss: 0.1511 - val_accuracy: 0.8056 - 146ms/epoch - 2ms/step
+Epoch 11/15
+.83/83 - 0s - loss: 0.0335 - accuracy: 0.8215 - val_loss: 0.1496 - val_accuracy: 0.8078 - 146ms/epoch - 2ms/step
+Epoch 12/15
+.83/83 - 0s - loss: 0.0378 - accuracy: 0.8242 - val_loss: 0.1444 - val_accuracy: 0.7911 - 140ms/epoch - 2ms/step
+Epoch 13/15
+.83/83 - 0s - loss: 0.0328 - accuracy: 0.8253 - val_loss: 0.1320 - val_accuracy: 0.8034 - 147ms/epoch - 2ms/step
+Epoch 14/15
+.83/83 - 0s - loss: 0.0362 - accuracy: 0.8279 - val_loss: 0.1254 - val_accuracy: 0.7933 - 158ms/epoch - 2ms/step
+Epoch 15/15
+.83/83 - 0s - loss: 0.0339 - accuracy: 0.8211 - val_loss: 0.1068 - val_accuracy: 0.8045 - 146ms/epoch - 2ms/step

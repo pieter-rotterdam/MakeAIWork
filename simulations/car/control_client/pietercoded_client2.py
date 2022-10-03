@@ -62,6 +62,29 @@ stdTrainStats = scaler.fit_transform(trainStats)
 # print(f" Train dataset       : {stdTrainData.shape}")
 # breakpoint ()
 
+
+"""
+print (type(stdTrainData.shape[1],))        <class 'int'>
+print ((stdTrainData.shape[1]))             3
+print (dir((stdTrainData.shape[1])))
+
+   
+    ['__abs__', '__add__', '__and__', '__bool__', '__ceil__', '__class__',
+     '__delattr__', '__dir__', '__divmod__', '__doc__', '__eq__', '__float__',
+      '__floor__', '__floordiv__', '__format__', '__ge__', '__getattribute__', 
+      '__getnewargs__', '__gt__', '__hash__', '__index__', '__init__', 
+      '__init_subclass__', '__int__', '__invert__', '__le__', '__lshift__',
+       '__lt__', '__mod__', '__mul__', '__ne__', '__neg__', '__new__', '__or__',
+        '__pos__', '__pow__', '__radd__', '__rand__', '__rdivmod__', '__reduce__', 
+        '__reduce_ex__', '__repr__', '__rfloordiv__', '__rlshift__', '__rmod__', 
+        '__rmul__', '__ror__', '__round__', '__rpow__', '__rrshift__', '__rshift__', 
+        '__rsub__', '__rtruediv__', '__rxor__', '__setattr__', '__sizeof__', 
+        '__str__', '__sub__', '__subclasshook__', '__truediv__', '__trunc__', 
+        '__xor__', 'as_integer_ratio', 'bit_length', 'conjugate', 'denominator', 
+        'from_bytes', 'imag', 'numerator', 'real', 'to_bytes']
+    """
+
+
 def build_model2_three_hidden_layers():
  model2 = Sequential() 
  model2.add(Dense(3, input_shape = (stdTrainData.shape[1],)))
@@ -74,7 +97,7 @@ def build_model2_three_hidden_layers():
  model2.compile(loss='mse', optimizer=optimizer,
  metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
  return model2
-
+ 
 model2 = build_model2_three_hidden_layers()
 #model.load_weights('./model_weights/my_checkpoint') voor testing cascading models
 print('Here is a summary of this model: ')
@@ -104,9 +127,10 @@ with tf.device('/CPU:0'):
 model2.save('./simulations/car/control_client/sonarmodel2.h5')
 model2.save_weights('./model_weights/my_checkpoint2')
 
-example_batch = stdTrainData[:10]
+example_batch = stdTrainData[:1]
 example_result = model2.predict(example_batch)
 print('Training predicted values 3 layers: ')
+print(example_batch)
 print(example_result)
 
 print('The actual labels 3 layers: ')
