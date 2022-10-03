@@ -31,6 +31,7 @@ import math as mt
 import sys as ss # The sys module in Python provides various functions and variables that are used to manipulate different parts of the Python runtime environment.
 import os # The OS module in Python provides functions for interacting with the operating system b.v. get current directory
 import socket as sc # Socket programming is a way of connecting two nodes on a network to communicate with each other. 
+import tensorflow as tf
 
 ss.path +=  [os.path.abspath (relPath) for relPath in  ('..',)] 
 
@@ -43,6 +44,7 @@ model_lidar_path = './simulations/car/control_client/sonarmodel2'
 
 class HardcodedClient:
     def __init__ (self):
+        self.model = None
         self.steeringAngle = 0
 
         with open (pm.sampleFileName, 'w') as self.sampleFile:
@@ -68,8 +70,12 @@ class HardcodedClient:
             
         if 'lidarDistances' in sensors:
             self.lidarDistances = sensors ['lidarDistances']
+            if self.model==None:
+                self.model = tf.keras.models.load_model(model_lidar_path) #lidar uit model path changed code            
         else:
             self.sonarDistances = sensors ['sonarDistances']
+            if self.model==None:
+                self.model = tf.keras.models.load_model(model_sonar_path) #sonar uit model path changed code
 
     def lidarSweep (self):
         nearestObstacleDistance = pm.finity
@@ -97,16 +103,19 @@ class HardcodedClient:
         self.steeringAngle = (nearestObstacleAngle + nextObstacleAngle) / 2
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
 
+        print (self.steeringAngle)
+
     def sonarSweep (self):
-        # steering_angle_model = self.model.predict(np.array([self.sonarDistances]))
+        steering_angle_model = self.model.predict(self.sonarDistances)
+
+ 
+
+
 
         # if prediction <.5, self.steeringAngle = -22 #uitkomst onder .5 = links
         # elif prediction <1.5, self.steeringAngle = 0 # uitkomst tussen .5 en 1.5 = rechtdoor
         # elif steeringangle = self.steeringAngle = 22# uitkomst boven 1.5 = rechts
       
-
-UITWERKEN!!!!
-
        
         # self.steeringAngle = float(steering_angle_model[0][0]) # koppelen
         # # print(steering_angle_model[0][0])

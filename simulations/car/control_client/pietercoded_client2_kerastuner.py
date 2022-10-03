@@ -62,7 +62,8 @@ stdTrainStats = scaler.fit_transform(trainStats)
 # print(f" Train dataset       : {stdTrainData.shape}")
 # breakpoint ()
 
-def build_model2_three_hidden_layers():
+def build_model2(hp):
+ 
  model2 = Sequential() 
  model2.add(Dense(3, input_shape = (stdTrainData.shape[1],)))
  model2.add(Dense(128,Activation('relu'))) 

@@ -67,6 +67,7 @@ class HardcodedClient:
             self.lidarDistances = sensors ['lidarDistances']
         else:
             self.sonarDistances = sensors ['sonarDistances']
+            print (self.sonarDistances)
 
     def lidarSweep (self):
         nearestObstacleDistance = pm.finity
@@ -116,9 +117,10 @@ class HardcodedClient:
         else:
             rightIndex = 0
            
-        """_summary_
-        """        self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
+        self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
+        print (self.steeringAngle)
+        print (type(self.steeringAngle))
 
     def sweep (self):
         if hasattr (self, 'lidarDistances'):
