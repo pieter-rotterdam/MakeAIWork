@@ -62,8 +62,7 @@ import socket_wrapper as sw
 # module die zorgt voor zenden/ontvangen van informatie tussen nodes
 import parameters as pm
 
-model_sonar_path = './simulations/car/control_client/sonarmodel2'
-model_lidar_path = './simulations/car/control_client/sonarmodel2'
+model_sonar_path = 'simulations/car/control_client/sonarmodel1.h5'
 
 class HardcodedClient:
     def __init__ (self):
@@ -95,12 +94,12 @@ class HardcodedClient:
         if 'lidarDistances' in sensors:
             self.lidarDistances = sensors ['lidarDistances']
             if self.model==None:
-                self.model = tf.keras.models.load_model(model_lidar_path) #lidar uit model path changed code            
+                self.model = tf.keras.models.load_model(model_lidar_path)           
         else:
             self.sonarDistances = sensors ['sonarDistances']
 
             if self.model==None:
-                self.model = tf.keras.models.load_model(model_sonar_path) #sonar uit model path changed code
+                self.model = tf.keras.models.load_model(model_sonar_path) 
 
     def lidarSweep (self):
         nearestObstacleDistance = pm.finity

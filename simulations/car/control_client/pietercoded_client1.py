@@ -62,20 +62,23 @@ stdTrainStats = scaler.fit_transform(trainStats)
 # print(f" Train dataset       : {stdTrainData.shape}")
 # breakpoint ()
 
-def build_model1_one_hidden_layer():
+def build_tunermodel_five_hidden_layers():
  model = Sequential() 
  model.add(Dense(3, input_shape = (stdTrainData.shape[1],)))
- model.add(Dropout(0.2))
- model.add(Dense(224,Activation('relu'))) 
+ model.add(Dense(40, activation='relu'))
+ model.add(Dense(8, activation='relu'))
+ model.add(Dense(40, activation='relu'))
+ model.add(Dense(40, activation='relu'))
+ model.add(Dense(8, activation='relu'))
  model.add(Dense(1)) 
  
- learning_rate = 0.005
+ learning_rate = 0.01
  optimizer = optimizers.Adam(learning_rate)
  model.compile(loss='mse', optimizer=optimizer,
  metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
  return model
 # accuracy bij metrics gebruiken - hier kun je zien of hij preciezer wordt
-model = build_model1_one_hidden_layer()
+model = build_tunermodel_five_hidden_layers()
 print('Here is a summary of this model: ')
 model.summary()
 
@@ -85,7 +88,7 @@ save_best_only=True, # Default false. If you don't change the file name then the
 save_weights_only=True, # True => model.save_weights (weights and no structure, you need JSON file for structure), False => model.save (saves weights & structure)
 verbose=0,)
 
-EPOCHS = 100 # hoger gaf geen verbetering
+EPOCHS = 15 # hoger gaf geen verbetering
 batch_size = 32
 
 with tf.device('/CPU:0'): 
@@ -103,13 +106,13 @@ with tf.device('/CPU:0'):
 model.save('./simulations/car/control_client/sonarmodel1.h5')
 model.save_weights('./model_weights/my_checkpoint1')
 
-example_batch = stdTrainData[:1]
+example_batch = stdTrainData[:20]
 example_result = model.predict(example_batch)
 print('Training predicted values 1 layer: ')
 print(example_result)
 
 print('The actual labels 1 layer: ')
-print (trainLabels[:10])
+print (trainLabels[:20])
 
 # prediction = model.predict(stdTrainData)
 # print (stdTrainData)
