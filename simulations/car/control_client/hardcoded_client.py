@@ -25,17 +25,17 @@ It is meant for training purposes only.
 Removing this header ends your license.
 '''
 
-from fileinput import filename
 import time as tm
-import traceback as tb
+import traceback as tb # a stack trace prints all the calls prior to the function that raised an exception. In all cases, the last line of a stack trace prints the most valuable information as here the error gets printed.
 import math as mt
-import sys as ss
-import os
-import socket as sc
+import sys as ss # The sys module in Python provides various functions and variables that are used to manipulate different parts of the Python runtime environment.
+import os # The OS module in Python provides functions for interacting with the operating system b.v. get current directory
+import socket as sc # Socket programming is a way of connecting two nodes on a network to communicate with each other. 
 
 ss.path +=  [os.path.abspath (relPath) for relPath in  ('..',)] 
 
 import socket_wrapper as sw
+# module die zorgt voor zenden/ontvangen van informatie tussen nodes
 import parameters as pm
 
 class HardcodedClient:
@@ -43,22 +43,22 @@ class HardcodedClient:
         self.steeringAngle = 0
 
         with open (pm.sampleFileName, 'w') as self.sampleFile:
-            with sc.socket (*sw.socketType) as self.clientSocket:
+            with sc.socket (*sw.socketType) as self.clientSocket:       #communicatie opzetten
                 self.clientSocket.connect (sw.address)
                 self.socketWrapper = sw.SocketWrapper (self.clientSocket)
                 self.halfApertureAngle = False
 
                 while True:
-                    self.input ()
+                    self.input () 
                     self.sweep ()
                     self.output ()
                     self.logTraining ()
                     tm.sleep (0.02)
 
     def input (self):
-        sensors = self.socketWrapper.recv ()
+        sensors = self.socketWrapper.recv () # via socketwrapper sensor info krijgen
 
-        if not self.halfApertureAngle:
+        if not self.halfApertureAngle: # de hoek die de sensor kan zien
             self.halfApertureAngle = sensors ['halfApertureAngle']
             self.sectorAngle = 2 * self.halfApertureAngle / pm.lidarInputDim
             self.halfMiddleApertureAngle = sensors ['halfMiddleApertureAngle']
@@ -67,6 +67,7 @@ class HardcodedClient:
             self.lidarDistances = sensors ['lidarDistances']
         else:
             self.sonarDistances = sensors ['sonarDistances']
+            print (self.sonarDistances)
 
     def lidarSweep (self):
         nearestObstacleDistance = pm.finity
@@ -95,14 +96,14 @@ class HardcodedClient:
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
 
     def sonarSweep (self):
-        obstacleDistances = [pm.finity for sectorIndex in range (3)]
-        obstacleAngles = [0 for sectorIndex in range (3)]
+        obstacleDistances = [pm.finity for sectorIndex in range (3)] #startpunt is distance 20m
+        obstacleAngles = [0 for sectorIndex in range (3)] #er zijn 3 afstanden op -1, 0 en 1
         
         for sectorIndex in (-1, 0, 1):
             sonarDistance = self.sonarDistances [sectorIndex]
             sonarAngle = 2 * self.halfMiddleApertureAngle * sectorIndex
             
-            if sonarDistance < obstacleDistances [sectorIndex]:
+            if sonarDistance < obstacleDistances [sectorIndex]: #als sonard
                 obstacleDistances [sectorIndex] = sonarDistance
                 obstacleAngles [sectorIndex] = sonarAngle
 
@@ -118,6 +119,8 @@ class HardcodedClient:
            
         self.steeringAngle = (obstacleAngles [leftIndex] + obstacleAngles [rightIndex]) / 2
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
+        # print (self.steeringAngle)
+        # print (type(self.steeringAngle))
 
     def sweep (self):
         if hasattr (self, 'lidarDistances'):
