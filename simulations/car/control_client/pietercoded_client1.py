@@ -46,10 +46,10 @@ trainStats.pop('angle')
 trainLabels = trainDataset.pop('angle')
 testLabels = testDataset.pop('angle')
 validLabels = validDataset.pop('angle')
-lb = LabelEncoder()
-trainLabels = lb.fit_transform(trainLabels)
-testLabels = lb.fit_transform(testLabels)
-validLabels = lb.fit_transform(validLabels)
+lb= LabelEncoder()
+stdTrainLabels = lb.fit_transform(trainLabels)
+stdTestLabels = lb.fit_transform(testLabels)
+stdValidLabels = lb.fit_transform(validLabels)
 
 # test normalizing vs standardizing MinMaxscaler vs StandardScaler, they help the model (less Spiky data)
 scaler = StandardScaler()
@@ -96,7 +96,7 @@ with tf.device('/CPU:0'):
   verbose=2,
   shuffle=True,
   steps_per_epoch = int(stdTrainData.shape[0] / batch_size),
-  validation_data = (stdValidDataset, validLabels),
+  validation_data = (stdValidDataset, stdValidLabels),
   callbacks=[tfdocs.modeling.EpochDots(), ckpt_callback],
   )
 model.save('./simulations/car/control_client/sonarmodel1.h5')
