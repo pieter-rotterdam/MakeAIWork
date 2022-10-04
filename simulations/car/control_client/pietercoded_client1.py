@@ -64,11 +64,12 @@ stdTrainStats = scaler.fit_transform(trainStats)
 
 def build_model1_one_hidden_layer():
  model = Sequential() 
- model.add(Dense(3, input_shape = (stdTrainData.shape[1],))) 
- model.add(Dense(32,Activation('relu'))) 
+ model.add(Dense(3, input_shape = (stdTrainData.shape[1],)))
+ model.add(Dropout(0.2))
+ model.add(Dense(224,Activation('relu'))) 
  model.add(Dense(1)) 
  
- learning_rate = 0.001
+ learning_rate = 0.005
  optimizer = optimizers.Adam(learning_rate)
  model.compile(loss='mse', optimizer=optimizer,
  metrics=['accuracy']) # for regression problems, mean squared error (MSE) is often employed
@@ -84,7 +85,7 @@ save_best_only=True, # Default false. If you don't change the file name then the
 save_weights_only=True, # True => model.save_weights (weights and no structure, you need JSON file for structure), False => model.save (saves weights & structure)
 verbose=0,)
 
-EPOCHS = 15 # hoger gaf geen verbetering
+EPOCHS = 100 # hoger gaf geen verbetering
 batch_size = 32
 
 with tf.device('/CPU:0'): 
@@ -105,19 +106,18 @@ model.save_weights('./model_weights/my_checkpoint1')
 example_batch = stdTrainData[:1]
 example_result = model.predict(example_batch)
 print('Training predicted values 1 layer: ')
-print(example_batch)
 print(example_result)
 
 print('The actual labels 1 layer: ')
 print (trainLabels[:10])
 
-prediction = model.predict(stdTrainData)
-print (stdTrainData)
-print (prediction) # komt eruit als np array
+# prediction = model.predict(stdTrainData)
+# print (stdTrainData)
+# print (prediction) # komt eruit als np array
 
 plotter = tfdocs.plots.HistoryPlotter(smoothing_std=2)
 plotter.plot({'Basic': history}, metric = 'accuracy')
-plt.ylim([0.7, 0.85])
+plt.ylim([0, 0.85])
 plt.ylabel('Angle [angle]')
 plt.show()
 

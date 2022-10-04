@@ -19,6 +19,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 
 hp = kt.HyperParameters()
+tf.random.set_seed(0)
 
 d = pd.read_csv ('./simulations/car/control_client/sonar.samples.csv', sep=' ', names=["dist1","dist2","dist3","angle"])
 # d.to_csv('./simulations/car/control_client/sonartest.csv', index=False)
@@ -60,7 +61,7 @@ def build_model(hp):
     )
     if hp.Boolean("dropout"):
         model.add(layers.Dropout(rate=0.25))
-    model.add(layers.Dense(10, activation="softmax"))
+    model.add(layers.Dense(10, activation="linear"))
     learning_rate = hp.Float("lr", min_value=1e-4, max_value=1e-2, sampling="log")
 
     model.compile(
@@ -83,4 +84,5 @@ tuner = kt.RandomSearch(
 
 tuner.search_space_summary()
 
-tuner.search(stdTrainData, stdTrainLabels, epochs=2, validation_data=(stdValidData, stdValidLabels))
+tuner.search(stdTrainData, stdTrainLabels, epochs=200, validation_data=(stdValidData, stdValidLabels))
+
