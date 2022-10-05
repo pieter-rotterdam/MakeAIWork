@@ -132,9 +132,9 @@ class HardcodedClient:
 
         steering_angle_model = self.model.predict([self.sonarDistances])
         self.steeringAngle = float(steering_angle_model[0][0])
-        # if self.steeringAngle < 0.5: self.steeringAngle = -22
-        # elif self.steeringAngle < 1.5: self.steeringAngle = 0
-        # elif self.steeringAngle > 1.5: self.steeringAngle = 22
+        if self.steeringAngle < 0.5: self.steeringAngle = -22
+        elif self.steeringAngle < 1.5: self.steeringAngle = 0
+        elif self.steeringAngle > 1.5: self.steeringAngle = 22
         self.targetVelocity = pm.getTargetVelocity (self.steeringAngle)
         
     def sweep (self):
