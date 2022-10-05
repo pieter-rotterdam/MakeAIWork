@@ -1,0 +1,75 @@
+Here is a summary of this model: 
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense (Dense)               (None, 3)                 12        
+                                                                 
+ dense_1 (Dense)             (None, 40)                160       
+                                                                 
+ dense_2 (Dense)             (None, 8)                 328       
+                                                                 
+ dense_3 (Dense)             (None, 40)                360       
+                                                                 
+ dense_4 (Dense)             (None, 40)                1640      
+                                                                 
+ dense_5 (Dense)             (None, 8)                 328       
+                                                                 
+ dense_6 (Dense)             (None, 1)                 9         
+                                                                 
+=================================================================
+Total params: 2,837
+Trainable params: 2,837
+Non-trainable params: 0
+_________________________________________________________________
+Training predicted values 1 layer: 
+[[0.06599372]
+ [0.04056932]
+ [0.1771648 ]
+ [0.14952955]
+ [0.20376685]
+ [0.07846099]
+ [0.16571626]
+ [0.01800842]
+ [0.00813267]
+ [0.03722959]]
+Here is a summary of this model: 
+Model: "sequential_1"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_7 (Dense)             (None, 3)                 12        
+                                                                 
+ dense_8 (Dense)             (None, 40)                160       
+                                                                 
+ dense_9 (Dense)             (None, 8)                 328       
+                                                                 
+ dense_10 (Dense)            (None, 40)                360       
+                                                                 
+ dense_11 (Dense)            (None, 40)                1640      
+                                                                 
+ dense_12 (Dense)            (None, 8)                 328       
+                                                                 
+ dense_13 (Dense)            (None, 1)                 9         
+                                                                 
+=================================================================
+Total params: 2,837
+Trainable params: 2,837
+Non-trainable params: 0
+_________________________________________________________________
+Epoch 1/5
+
+Epoch: 0, accuracy:0.6070,  loss:59.9538,  val_accuracy:0.0926,  val_loss:78.1854,  
+.172/172 - 1s - loss: 59.9538 - accuracy: 0.6070 - val_loss: 78.1854 - val_accuracy: 0.0926 - 582ms/epoch - 3ms/step
+Epoch 2/5
+.172/172 - 0s - loss: 37.4376 - accuracy: 0.6925 - val_loss: 72.5732 - val_accuracy: 0.0679 - 165ms/epoch - 957us/step
+Epoch 3/5
+.172/172 - 0s - loss: 32.0712 - accuracy: 0.6995 - val_loss: 81.8746 - val_accuracy: 0.0811 - 165ms/epoch - 959us/step
+Epoch 4/5
+.172/172 - 0s - loss: 31.3794 - accuracy: 0.7049 - val_loss: 62.3159 - val_accuracy: 0.0723 - 150ms/epoch - 873us/step
+Epoch 5/5
+.172/172 - 0s - loss: 31.7091 - accuracy: 0.7102 - val_loss: 56.6755 - val_accuracy: 0.0723 - 152ms/epoch - 883us/step
+predicted values: 
+Traininglabels: 
+predicted values: 
+Testlabels: 

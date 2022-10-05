@@ -1,0 +1,16 @@
+Search space summary
+Default search space size: 7
+num_layers (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 5, 'step': 1, 'sampling': None}
+units_0 (Int)
+{'default': None, 'conditions': [], 'min_value': 8, 'max_value': 256, 'step': 32, 'sampling': None}
+units_1 (Int)
+{'default': None, 'conditions': [], 'min_value': 8, 'max_value': 256, 'step': 32, 'sampling': None}
+learning_rate (Choice)
+{'default': 0.01, 'conditions': [], 'values': [0.01, 0.001, 0.0001], 'ordered': True}
+units_2 (Int)
+{'default': None, 'conditions': [], 'min_value': 8, 'max_value': 256, 'step': 32, 'sampling': None}
+units_3 (Int)
+{'default': None, 'conditions': [], 'min_value': 8, 'max_value': 256, 'step': 32, 'sampling': None}
+units_4 (Int)
+{'default': None, 'conditions': [], 'min_value': 8, 'max_value': 256, 'step': 32, 'sampling': None}
